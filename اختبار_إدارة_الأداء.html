@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار إدارة الأداء — أمانة المنطقة الشرقية</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap');
+:root{
+  --navy:#0D3B6E;--navy2:#1A5276;--blue:#2471A3;
+  --gold:#B8860B;--gold2:#D4A017;--teal:#117A65;
+  --red:#922B21;--green:#1E8449;
+  --white:#FFFFFF;--bg:#F0F4F8;--text:#1C2B3A;--muted:#5D6D7E;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);direction:rtl;}
+/* HEADER */
+.hdr{background:var(--navy);position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.3);}
+.hdr-gold{height:5px;background:var(--gold2);}
+.hdr-in{display:flex;align-items:center;justify-content:space-between;padding:12px 28px;}
+.hdr-org{font-size:17px;font-weight:700;color:var(--gold2);}
+.hdr-sub{font-size:11px;color:#A8C4D8;}
+.hdr-badge{background:var(--gold2);color:var(--navy);font-weight:900;font-size:13px;padding:5px 18px;border-radius:20px;}
+.prog{height:4px;background:rgba(255,255,255,.12);}
+.prog-fill{height:100%;background:var(--gold2);transition:width .4s;width:0%;}
+/* SCREENS */
+.scr{display:none;}.scr.on{display:block;}
+/* COVER */
+.cover{min-height:calc(100vh - 66px);background:linear-gradient(140deg,var(--navy) 0%,var(--navy2) 70%,#163855 100%);display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.ccard{background:rgba(255,255,255,.06);border:1px solid rgba(212,160,23,.25);border-radius:20px;padding:48px 52px;max-width:680px;width:100%;text-align:center;backdrop-filter:blur(8px);}
+.ctitle{font-size:40px;font-weight:900;color:#fff;line-height:1.3;margin-bottom:8px;}
+.csub{font-size:17px;color:var(--gold2);margin-bottom:36px;}
+.cstats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:36px;}
+.cstat{background:rgba(255,255,255,.07);border:1px solid rgba(212,160,23,.18);border-radius:12px;padding:18px 10px;}
+.csn{font-size:30px;font-weight:900;color:var(--gold2);}
+.csl{font-size:12px;color:#A8C4D8;margin-top:3px;}
+.nfield{margin-bottom:28px;text-align:right;}
+.nfield label{display:block;font-size:14px;color:var(--gold2);font-weight:600;margin-bottom:8px;}
+.nfield input{width:100%;padding:13px 18px;border-radius:10px;border:2px solid rgba(212,160,23,.3);background:rgba(255,255,255,.08);color:#fff;font-family:'Cairo',sans-serif;font-size:15px;text-align:right;outline:none;transition:border-color .2s;}
+.nfield input:focus{border-color:var(--gold2);}
+.nfield input::placeholder{color:rgba(255,255,255,.3);}
+.btn-start{background:var(--gold2);color:var(--navy);border:none;padding:17px 0;border-radius:50px;font-size:19px;font-weight:900;font-family:'Cairo',sans-serif;cursor:pointer;width:100%;transition:all .2s;}
+.btn-start:hover{background:var(--gold);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+/* QUIZ */
+.qwrap{max-width:780px;margin:0 auto;padding:28px 20px;}
+.qmeta{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px;}
+.qsec{font-size:12px;font-weight:700;padding:5px 14px;border-radius:16px;color:#fff;}
+.qcount{font-size:13px;color:var(--muted);font-weight:600;}
+.qtype{font-size:11px;padding:4px 11px;border-radius:12px;font-weight:700;color:#fff;}
+.qcard{background:var(--navy);border-radius:16px;padding:30px;margin-bottom:22px;border-right:5px solid var(--gold2);box-shadow:0 4px 20px rgba(13,59,110,.15);}
+.qtext{font-size:19px;font-weight:700;color:#fff;line-height:1.65;}
+.choices{display:flex;flex-direction:column;gap:10px;}
+.cbtn{display:flex;align-items:center;gap:14px;padding:15px 18px;border-radius:12px;border:2px solid #D0DCE8;background:#fff;cursor:pointer;transition:all .2s;font-family:'Cairo',sans-serif;font-size:14.5px;color:var(--text);text-align:right;direction:rtl;width:100%;}
+.cbtn:hover{border-color:var(--blue);background:#EBF4FF;}
+.cbtn.correct{border-color:var(--green)!important;background:#E8F8EF!important;}
+.cbtn.wrong{border-color:var(--red)!important;background:#FDECEA!important;}
+.cltr{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#fff;flex-shrink:0;}
+.tfwrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px;}
+.tfbtn{padding:26px 16px;border-radius:14px;border:3px solid;cursor:pointer;font-family:'Cairo',sans-serif;font-size:21px;font-weight:900;transition:all .2s;background:#fff;width:100%;}
+.tfbtn.t{border-color:var(--green);color:var(--green);}
+.tfbtn.f{border-color:var(--red);color:var(--red);}
+.tfbtn:hover{transform:translateY(-2px);}
+.tfbtn.t.sel,.tfbtn.t.ok{background:var(--green);color:#fff;}
+.tfbtn.f.sel,.tfbtn.f.ok{background:var(--red);color:#fff;}
+.tfbtn.dim{opacity:.4;}
+.fb{display:none;padding:13px 18px;border-radius:10px;margin-top:14px;font-size:13.5px;font-weight:600;}
+.fb.ok{background:#E8F8EF;color:var(--green);border:1px solid var(--green);display:block;}
+.fb.err{background:#FDECEA;color:var(--red);border:1px solid var(--red);display:block;}
+.nav{display:flex;gap:10px;margin-top:22px;}
+.btnnext{background:var(--navy);color:#fff;border:none;padding:14px 0;border-radius:50px;font-family:'Cairo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;flex:1;transition:all .2s;}
+.btnnext:hover{background:var(--navy2);}
+.btnnext:disabled{opacity:.38;cursor:not-allowed;}
+/* RESULTS */
+.rwrap{max-width:860px;margin:0 auto;padding:36px 20px 60px;}
+.scard{background:var(--navy);border-radius:20px;padding:40px 32px;text-align:center;margin-bottom:28px;position:relative;overflow:hidden;}
+.scard::before{content:'';position:absolute;top:-40px;left:-40px;width:200px;height:200px;background:rgba(212,160,23,.06);border-radius:50%;}
+.rname{font-size:18px;color:#A8C4D8;margin-bottom:20px;}
+.circle{width:160px;height:160px;border-radius:50%;border:7px solid var(--gold2);background:rgba(255,255,255,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 0 36px rgba(212,160,23,.25);}
+.cnum{font-size:48px;font-weight:900;color:var(--gold2);line-height:1;}
+.cof{font-size:16px;color:#A8C4D8;}
+.gpill{display:inline-block;padding:10px 36px;border-radius:50px;font-size:22px;font-weight:900;color:#fff;margin-bottom:12px;}
+.gdesc{font-size:14px;color:#A8C4D8;}
+/* Section table */
+.bcard{background:#fff;border-radius:16px;overflow:hidden;margin-bottom:28px;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+.bhdr{background:var(--navy2);color:#fff;padding:14px 24px;font-size:15px;font-weight:700;}
+table.bt{width:100%;border-collapse:collapse;}
+table.bt th{background:var(--navy);color:#fff;padding:11px 16px;font-size:13px;text-align:center;}
+table.bt td{padding:11px 16px;border-bottom:1px solid #E8EDF3;font-size:13px;text-align:center;}
+table.bt tr:last-child td{border-bottom:none;}
+table.bt tr:nth-child(even) td{background:#F8FAFC;}
+.okc{color:var(--green);font-weight:700;}.errc{color:var(--red);font-weight:700;}
+/* Review grid */
+.revcard{background:#fff;border-radius:16px;padding:24px;margin-bottom:28px;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+.revtitle{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:16px;}
+.agrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.abox{border-radius:10px;padding:12px 4px;text-align:center;font-size:13px;font-weight:700;color:#fff;}
+/* CERTIFICATE */
+.cert{background:#fff;border-radius:20px;overflow:hidden;margin-bottom:28px;box-shadow:0 4px 24px rgba(0,0,0,.1);}
+.cert-top{background:var(--navy);padding:28px 40px;text-align:center;}
+.cert-top-t{font-size:12px;color:var(--gold2);font-weight:700;letter-spacing:2px;margin-bottom:4px;}
+.cert-top-o{font-size:20px;font-weight:900;color:#fff;}
+.cert-body{padding:36px 40px;text-align:center;border:4px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,var(--gold2),var(--navy),var(--gold2)) border-box;border-radius:0 0 16px 16px;}
+.cert-lbl{font-size:13px;color:var(--muted);margin-bottom:6px;}
+.cert-nm{font-size:30px;font-weight:900;color:var(--navy);margin-bottom:20px;border-bottom:2px solid var(--gold2);padding-bottom:12px;}
+.cert-txt{font-size:15px;color:var(--text);margin-bottom:20px;line-height:1.7;}
+.cert-row{display:flex;justify-content:center;gap:32px;margin-bottom:24px;}
+.cert-stat .n{font-size:28px;font-weight:900;color:var(--navy);}
+.cert-stat .l{font-size:12px;color:var(--muted);}
+.cert-grade{font-size:20px;font-weight:900;padding:10px 32px;border-radius:50px;margin-bottom:24px;display:inline-block;}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;padding-top:20px;border-top:1px solid #E8EDF3;}
+.cert-sig-line{width:140px;height:1px;background:var(--navy);margin:0 auto 6px;}
+.cert-sig-lbl{font-size:11px;color:var(--muted);}
+.cert-date-lbl{font-size:11px;color:var(--muted);margin-bottom:4px;}
+.cert-date-val{font-size:14px;font-weight:700;color:var(--navy);}
+/* QR in results */
+.qrsec{background:#fff;border-radius:16px;padding:28px;text-align:center;margin-bottom:28px;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+.qrsec-t{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.qrsec-s{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.qr-link-txt{font-size:11px;color:var(--muted);word-break:break-all;background:var(--bg);padding:8px 12px;border-radius:8px;display:inline-block;margin-top:12px;}
+/* Buttons */
+.btn-print{background:var(--teal);color:#fff;border:none;padding:15px 0;border-radius:50px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:700;cursor:pointer;width:100%;margin-bottom:12px;transition:all .2s;}
+.btn-print:hover{opacity:.88;}
+.btn-restart{background:var(--navy);color:#fff;border:none;padding:15px 0;border-radius:50px;font-family:'Cairo',sans-serif;font-size:16px;font-weight:700;cursor:pointer;width:100%;transition:all .2s;}
+.btn-restart:hover{background:var(--navy2);}
+/* FAB */
+.fab{position:fixed;bottom:26px;left:26px;width:56px;height:56px;background:var(--gold2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.3);font-size:22px;z-index:999;transition:all .2s;}
+.fab:hover{transform:scale(1.1);}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;}
+.modal.open{display:flex;}
+.mbox{background:#fff;border-radius:20px;padding:36px;text-align:center;max-width:320px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.mbox h3{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.mbox p{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.btn-closem{background:var(--navy);color:#fff;border:none;padding:9px 28px;border-radius:50px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.murl{font-size:11px;color:var(--muted);word-break:break-all;background:var(--bg);padding:8px;border-radius:8px;margin-bottom:16px;}
+@media print{
+  .fab,.modal,.btn-print,.btn-restart,.nav,.hdr{display:none!important;}
+  .cert{box-shadow:none;}body{background:#fff;}
+}
+@media(max-width:480px){
+  .ccard{padding:32px 24px;}.ctitle{font-size:30px;}
+  .agrid{grid-template-columns:repeat(4,1fr);}
+  .cert-body{padding:24px 20px;}.cert-row{gap:16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- FAB QR -->
+<div class="fab" onclick="openFab()" title="مشاركة الاختبار">📱</div>
+<div class="modal" id="modal" onclick="closeFab(event)">
+  <div class="mbox">
+    <h3>شارك الاختبار</h3>
+    <p>امسح الرمز لفتح الاختبار على أي جهاز</p>
+    <div id="fabQR" style="display:flex;justify-content:center;margin-bottom:14px;"></div>
+    <div class="murl" id="fabUrl"></div>
+    <button class="btn-closem" onclick="document.getElementById('modal').classList.remove('open')">إغلاق</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-gold"></div>
+  <div class="hdr-in">
+    <div><div class="hdr-org">أمانة المنطقة الشرقية</div><div class="hdr-sub">إدارة الأداء وقياس مؤشرات الأداء</div></div>
+    <div class="hdr-badge">اختبار تقييمي</div>
+  </div>
+  <div class="prog"><div class="prog-fill" id="pf"></div></div>
+</div>
+
+<!-- COVER -->
+<div class="scr on" id="sCover">
+  <div class="cover">
+    <div class="ccard">
+      <div class="ctitle">اختبار إدارة الأداء</div>
+      <div class="csub">الأيام الأول — الثاني — الثالث — الرابع</div>
+      <div class="cstats">
+        <div class="cstat"><div class="csn">25</div><div class="csl">سؤالاً</div></div>
+        <div class="cstat"><div class="csn">20</div><div class="csl">دقيقة</div></div>
+        <div class="cstat"><div class="csn">4</div><div class="csl">محاور</div></div>
+      </div>
+      <div class="nfield">
+        <label>اسم المتدرب</label>
+        <input type="text" id="nameIn" placeholder="اكتب اسمك هنا...">
+      </div>
+      <button class="btn-start" onclick="start()">▶  ابدأ الاختبار الآن</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="scr" id="sQuiz">
+  <div class="qwrap">
+    <div class="qmeta">
+      <div class="qsec" id="qSec"></div>
+      <div class="qcount" id="qCnt"></div>
+      <div class="qtype" id="qTyp"></div>
+    </div>
+    <div class="qcard"><div class="qtext" id="qTxt"></div></div>
+    <div id="cArea"></div>
+    <div class="fb" id="fb"></div>
+    <div class="nav">
+      <button class="btnnext" id="btnN" onclick="next()" disabled>التالي ◀</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="scr" id="sRes">
+  <div class="rwrap">
+    <!-- Score -->
+    <div class="scard">
+      <div class="rname" id="rName"></div>
+      <div class="circle"><div class="cnum" id="sNum"></div><div class="cof">من 25</div></div>
+      <div class="gpill" id="gPill"></div>
+      <div class="gdesc" id="gDesc"></div>
+    </div>
+    <!-- Breakdown -->
+    <div class="bcard">
+      <div class="bhdr">📊 النتائج حسب المحور</div>
+      <table class="bt">
+        <thead><tr><th>المحور</th><th>عدد الأسئلة</th><th>الصحيح</th><th>النسبة</th></tr></thead>
+        <tbody id="btB"></tbody>
+      </table>
+    </div>
+    <!-- Review -->
+    <div class="revcard">
+      <div class="revtitle">مراجعة الإجابات — 🟩 صحيح  |  🟥 خطأ</div>
+      <div class="agrid" id="aGrid"></div>
+    </div>
+    <!-- CERTIFICATE -->
+    <div class="cert">
+      <div class="cert-top">
+        <div class="cert-top-t">المملكة العربية السعودية</div>
+        <div class="cert-top-o">أمانة المنطقة الشرقية</div>
+      </div>
+      <div class="cert-body">
+        <div class="cert-lbl">شهادة إتمام اختبار تقييمي</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:16px;">برنامج إدارة الأداء وقياس مؤشرات الأداء</div>
+        <div class="cert-lbl">المتدرب</div>
+        <div class="cert-nm" id="cNm"></div>
+        <div class="cert-txt">أكمل الاختبار التقييمي الشامل لبرنامج<br><strong>إدارة الأداء وقياس مؤشرات الأداء</strong><br>لأمانة المنطقة الشرقية — الأيام الأول حتى الرابع</div>
+        <div class="cert-row">
+          <div class="cert-stat"><div class="n" id="cSc"></div><div class="l">درجة من 25</div></div>
+          <div class="cert-stat"><div class="n" id="cPct"></div><div class="l">نسبة النجاح</div></div>
+          <div class="cert-stat"><div class="n">4</div><div class="l">محاور تدريبية</div></div>
+        </div>
+        <div class="cert-grade" id="cGr"></div>
+        <div class="cert-foot">
+          <div style="text-align:center;">
+            <div class="cert-sig-line"></div>
+            <div class="cert-sig-lbl">مدير البرنامج التدريبي</div>
+          </div>
+          <div style="text-align:center;">
+            <div id="certQR" style="display:flex;justify-content:center;margin-bottom:4px;"></div>
+            <div style="font-size:10px;color:var(--muted);">رمز التحقق</div>
+          </div>
+          <div style="text-align:center;">
+            <div class="cert-date-lbl">تاريخ الاختبار</div>
+            <div class="cert-date-val" id="cDt"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- QR share -->
+    <div class="qrsec">
+      <div class="qrsec-t">📱 شارك الاختبار مع زملائك</div>
+      <div class="qrsec-s">امسح رمز QR لفتح الاختبار على أي جهاز</div>
+      <div id="qrRes" style="display:flex;justify-content:center;"></div>
+      <div class="qr-link-txt" id="qrLnk"></div>
+    </div>
+    <button class="btn-print" onclick="window.print()">🖨️  طباعة الشهادة والنتائج</button>
+    <button class="btn-restart" onclick="restart()">🔄  إعادة الاختبار</button>
+  </div>
+</div>
+
+<script>
+const Q=[
+  {s:"اليوم الأول",t:"mcq",q:"ما التعريف الصحيح لإدارة الأداء في المؤسسات الحكومية؟",c:["نظام يُقيَّم فيه الموظفون بناءً على أدائهم مقابل ميثاق أداء يتكون من الأهداف والكفاءات","نظام يُستخدم فقط لمكافأة الموظفين المتميزين وتوثيق إنجازاتهم السنوية","أسلوب لرصد الغيابات والمخالفات الوظيفية وإعداد تقارير دورية عنها"],a:0},
+  {s:"اليوم الأول",t:"mcq",q:"كم عدد المراحل الأساسية في دورة إدارة الأداء السنوية؟",c:["أربع مراحل رئيسية","ست مراحل رئيسية","ثلاث مراحل رئيسية"],a:1},
+  {s:"اليوم الأول",t:"mcq",q:"ماذا يحدث إذا حصل الموظف على تقدير «١ — أداء منخفض» في التقييم السنوي؟",c:["يُفصل من الخدمة فوراً دون أي إجراءات","يحق له رفع تظلم ويوضع في خطة تحسين أداء فورية","يُعاد تقييمه تلقائياً بعد شهر دون أي إجراء إضافي"],a:1},
+  {s:"اليوم الأول",t:"tf",q:"ميثاق الأداء وثيقة يُعدّها المدير منفرداً دون مشاركة الموظف، ثم يُسلَّم للموظف للتوقيع فقط.",a:false},
+  {s:"اليوم الأول",t:"mcq",q:"ما الجهة المسؤولة عن تحديد توزيعات التصنيف الإجباري في المؤسسة الحكومية؟",c:["المدير المباشر لكل قسم بحسب تقديره الشخصي","لجنة إدارة الأداء بعد تحليل بيانات الأداء","الموظف الأعلى درجة في كل إدارة"],a:1},
+  {s:"اليوم الأول",t:"tf",q:"ربط الأداء بالحوافز والمكافآت ليس شرطاً أساسياً لنجاح نظام إدارة الأداء.",a:false},
+  {s:"اليوم الأول",t:"tf",q:"تدوير الدرجات وإعطاء الجميع تقييماً متساوياً يُضعف ثقة الموظفين المتميزين في نظام إدارة الأداء.",a:true},
+  {s:"اليوم الثاني",t:"mcq",q:"ما معنى حرف «A» في منهجية SMART للأهداف؟",c:["Ambitious — طموح","Achievable — قابل للتحقيق","Accurate — دقيق"],a:1},
+  {s:"اليوم الثاني",t:"mcq",q:"أي من الأهداف التالية يُعدّ هدفاً ذكياً SMART صحيحاً؟",c:["تحسين رضا المستفيدين","رفع نسبة رضا المستفيدين من 72% إلى 90% بحلول نهاية الربع الثالث","الاهتمام بخدمة المستفيدين بشكل أفضل مما هو عليه الآن"],a:1},
+  {s:"اليوم الثاني",t:"tf",q:"الفرق بين KPI و OKR أن KPI يقيس الأداء الحالي، بينما OKR يُركّز على التغيير والقفزات النوعية.",a:true},
+  {s:"اليوم الثاني",t:"mcq",q:"ما الأسلوب الأمثل لإسقاط الأهداف في المؤسسات الحكومية؟",c:["من الأسفل للأعلى فقط — الموظف يحدد أهدافه بشكل مستقل","تشاركي — القيادة تحدد الإطار الاستراتيجي والموظف يصوغ أهدافه مع مديره","من الأعلى للأسفل فقط — الأهداف تُفرض دون نقاش"],a:1},
+  {s:"اليوم الثاني",t:"tf",q:"مجموع الأوزان النسبية لجميع أهداف الموظف في ميثاق الأداء يجب أن يساوي 100%.",a:true},
+  {s:"اليوم الثاني",t:"mcq",q:"ما الغرض الأساسي من مصفوفة الأهداف والأنشطة/المهام؟",c:["تحديد رواتب الموظفين وفق مستوى أدائهم","ربط كل هدف بالأنشطة التنفيذية والمسؤول والجدول الزمني","تسجيل الغيابات والتأخرات وربطها بالأداء العام"],a:1},
+  {s:"اليوم الثالث",t:"mcq",q:"أي نوع من مؤشرات الأداء يقيس التغيير الإيجابي الشامل على المجتمع والبيئة؟",c:["مؤشرات الكفاءة","مؤشرات الأثر","مؤشرات الجودة"],a:1},
+  {s:"اليوم الثالث",t:"tf",q:"يمكن تصميم مؤشر أداء فعّال دون تحديد مصدر بيانات واضح، شريطة أن يكون الهدف ذكياً SMART.",a:false},
+  {s:"اليوم الثالث",t:"mcq",q:"ما الخطوة الأولى في منهجية تصميم مؤشر الأداء خطوة بخطوة؟",c:["تحديد القيمة المستهدفة للمؤشر","تحديد الهدف أو المشكلة التي يُراد قياسها","اختيار أداة جمع البيانات المناسبة"],a:1},
+  {s:"اليوم الثالث",t:"mcq",q:"ما الحد الأمثل لعدد المؤشرات الرئيسية لكل هدف استراتيجي؟",c:["10 مؤشرات أو أكثر","من 3 إلى 5 مؤشرات رئيسية","مؤشر واحد فقط لكل هدف"],a:1},
+  {s:"اليوم الثالث",t:"tf",q:"مؤشر «عدد الاجتماعات المنعقدة شهرياً» مثال جيد على مؤشر أداء فعّال لأنه سهل القياس.",a:false},
+  {s:"اليوم الثالث",t:"tf",q:"ربط مؤشرات الأداء بالأهداف الاستراتيجية يُعزّز قيمتها ويجعلها أداة فعلية لدعم اتخاذ القرار.",a:true},
+  {s:"اليوم الرابع",t:"mcq",q:"ما المعادلة الصحيحة لحساب فجوة الأداء في Gap Analysis؟",c:["الأداء الفعلي − الأداء المستهدف","الأداء المستهدف − الأداء الفعلي","الأداء الفعلي ÷ الأداء المستهدف × 100"],a:1},
+  {s:"اليوم الرابع",t:"tf",q:"نظام إشارات المرور: الأخضر = 90% فأكثر، الأصفر = 75–89%، الأحمر = أقل من 75% من المستهدف.",a:true},
+  {s:"اليوم الرابع",t:"mcq",q:"ما الفرق بين لوحة المعلومات للمستوى التشغيلي والمستوى القيادي؟",c:["لا يوجد فرق — تُستخدم نفس اللوحة","لوحة التشغيل تعرض تفاصيل دقيقة، بينما لوحة القيادة تعرض ملخصاً استراتيجياً","لوحة التشغيل باللون الأحمر ولوحة القيادة باللون الأزرق"],a:1},
+  {s:"اليوم الرابع",t:"mcq",q:"ما المكوّن الأهم الذي يجب أن يتضمنه تقرير الأداء الجيد بعد عرض النتائج؟",c:["قائمة بأسماء الموظفين الأقل أداءً","التوصيات والإجراءات التصحيحية مع جدول زمني للمتابعة","عدد ساعات العمل الإضافية لكل موظف"],a:1},
+  {s:"اليوم الرابع",t:"tf",q:"خطة تحسين الأداء هي عقوبة للموظف ضعيف الأداء، وليست أداة دعم منهجية.",a:false},
+  {s:"اليوم الرابع",t:"tf",q:"القرار المبني على البيانات يعني الاستناد إلى أرقام موثّقة + تحليل منهجي + رؤية استراتيجية.",a:true},
+];
+
+const SC={"اليوم الأول":"#0D3B6E","اليوم الثاني":"#117A65","اليوم الثالث":"#2471A3","اليوم الرابع":"#B8860B"};
+const CC=["#0D3B6E","#117A65","#2471A3"];
+const LB=["أ","ب","ج"];
+let cur=0,score=0,ans=[],done=false,uname="";
+
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0);}
+
+function start(){
+  uname=document.getElementById('nameIn').value.trim()||"المتدرب";
+  cur=0;score=0;ans=[];done=false;
+  show('sQuiz');render();
+}
+
+function render(){
+  const q=Q[cur];done=false;
+  document.getElementById('btnN').disabled=true;
+  document.getElementById('pf').style.width=(cur/Q.length*100)+'%';
+  const st=document.getElementById('qSec');st.textContent=q.s;st.style.background=SC[q.s];
+  document.getElementById('qCnt').textContent=`${cur+1} / ${Q.length}`;
+  const tp=document.getElementById('qTyp');
+  if(q.t==='mcq'){tp.textContent='اختيار من 3';tp.style.background='#1A5276';}
+  else{tp.textContent='صح / خطأ';tp.style.background='#784212';}
+  document.getElementById('qTxt').textContent=q.q;
+  document.getElementById('fb').className='fb';
+  const area=document.getElementById('cArea');area.innerHTML='';
+  if(q.t==='mcq'){
+    const d=document.createElement('div');d.className='choices';
+    q.c.forEach((c,i)=>{
+      const b=document.createElement('button');b.className='cbtn';
+      b.innerHTML=`<span class="cltr" style="background:${CC[i]}">${LB[i]}</span><span>${c}</span>`;
+      b.onclick=()=>pickM(i);d.appendChild(b);
+    });area.appendChild(d);
+  }else{
+    const d=document.createElement('div');d.className='tfwrap';
+    const tb=document.createElement('button');tb.className='tfbtn t';tb.innerHTML='✓  صحيح';tb.onclick=()=>pickTF(true);
+    const fb=document.createElement('button');fb.className='tfbtn f';fb.innerHTML='✗  خطأ';fb.onclick=()=>pickTF(false);
+    d.appendChild(tb);d.appendChild(fb);area.appendChild(d);
+  }
+}
+
+function pickM(i){
+  if(done)return;done=true;
+  const q=Q[cur],ok=q.a===i;
+  if(ok)score++;ans[cur]={ok};
+  document.querySelectorAll('.cbtn').forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add('correct');else if(j===i&&!ok)b.classList.add('wrong');});
+  showFB(ok,q.c[q.a]);
+  document.getElementById('btnN').disabled=false;
+}
+
+function pickTF(v){
+  if(done)return;done=true;
+  const q=Q[cur],ok=q.a===v;
+  if(ok)score++;ans[cur]={ok};
+  document.querySelectorAll('.tfbtn').forEach(b=>{b.disabled=true;const isT=b.classList.contains('t');if(isT===q.a)b.classList.add('ok');else if(isT===v&&!ok)b.classList.add('dim');});
+  showFB(ok,q.a?'صحيح ✓':'خطأ ✗');
+  document.getElementById('btnN').disabled=false;
+}
+
+function showFB(ok,ca){
+  const f=document.getElementById('fb');
+  f.className='fb '+(ok?'ok':'err');
+  f.textContent=ok?'✓  إجابة صحيحة!':'✗  الإجابة الصحيحة: '+ca;
+}
+
+function next(){cur++;if(cur>=Q.length)showRes();else render();}
+
+function showRes(){
+  document.getElementById('pf').style.width='100%';
+  show('sRes');
+  document.getElementById('rName').textContent='المتدرب: '+uname;
+  document.getElementById('sNum').textContent=score;
+  let g,gc,gd;
+  if(score>=22){g='ممتاز 🏆';gc='#1E8449';gd='أداء استثنائي — أنت على دراية كاملة بمحتوى الدورة';}
+  else if(score>=18){g='جيد جداً ⭐';gc='#117A65';gd='أداء مرتفع — أتقنت معظم المفاهيم الأساسية';}
+  else if(score>=14){g='جيد 👍';gc='#2471A3';gd='أداء مقبول — بعض المحاور تحتاج مراجعة إضافية';}
+  else{g='يحتاج تطوير 📚';gc='#922B21';gd='راجع محتوى الدورة وأعد الاختبار للحصول على نتيجة أفضل';}
+  const p=document.getElementById('gPill');p.textContent=g;p.style.background=gc;
+  document.getElementById('gDesc').textContent=gd;
+  // Section breakdown
+  const secs=["اليوم الأول","اليوم الثاني","اليوم الثالث","اليوم الرابع"];
+  const tb=document.getElementById('btB');tb.innerHTML='';
+  secs.forEach(sec=>{
+    const idx=Q.map((q,i)=>q.s===sec?i:-1).filter(i=>i>=0);
+    const ok=idx.filter(i=>ans[i]?.ok).length,tot=idx.length;
+    tb.innerHTML+=`<tr><td style="font-weight:700;color:${SC[sec]}">${sec}</td><td>${tot}</td><td class="${ok===tot?'okc':'errc'}">${ok}</td><td style="font-weight:700">${Math.round(ok/tot*100)}%</td></tr>`;
+  });
+  // Answer grid
+  const ag=document.getElementById('aGrid');ag.innerHTML='';
+  Q.forEach((_,i)=>{
+    const b=document.createElement('div');b.className='abox';
+    b.style.background=ans[i]?.ok?'#1E8449':'#922B21';
+    b.textContent=i+1;b.title=ans[i]?.ok?'صحيح':'خطأ';ag.appendChild(b);
+  });
+  // Certificate
+  document.getElementById('cNm').textContent=uname;
+  document.getElementById('cSc').textContent=score;
+  document.getElementById('cPct').textContent=Math.round(score/25*100)+'%';
+  const cg=document.getElementById('cGr');cg.textContent=g;cg.style.background=gc;cg.style.color='#fff';
+  const now=new Date();
+  document.getElementById('cDt').textContent=now.toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'});
+  // QR in cert
+  const cqr=document.getElementById('certQR');
+  if(!cqr.hasChildNodes())new QRCode(cqr,{text:window.location.href,width:72,height:72,colorDark:'#0D3B6E',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});
+  // QR in results section
+  const qrr=document.getElementById('qrRes');
+  if(!qrr.hasChildNodes())new QRCode(qrr,{text:window.location.href,width:160,height:160,colorDark:'#0D3B6E',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});
+  document.getElementById('qrLnk').textContent=window.location.href;
+}
+
+function restart(){cur=0;score=0;ans=[];done=false;show('sCover');document.getElementById('pf').style.width='0%';}
+
+let fabBuilt=false;
+function openFab(){
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('fabUrl').textContent=window.location.href;
+  if(!fabBuilt){new QRCode(document.getElementById('fabQR'),{text:window.location.href,width:180,height:180,colorDark:'#0D3B6E',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});fabBuilt=true;}
+}
+function closeFab(e){if(e.target===document.getElementById('modal'))document.getElementById('modal').classList.remove('open');}
+</script>
+</body>
+</html>
